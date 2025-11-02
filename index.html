@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AstroMatch - Horoscope Details</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:600,400&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header>
+    <h1>AstroMatch Professional</h1>
+    <nav>
+      <a href="#" class="nav-link active">Horoscope Details</a>
+    </nav>
+  </header>
+  <main>
+    <section class="horoscope-section">
+      <h2>Get Horoscope by Birth Details</h2>
+      <form id="horoscopeForm" autocomplete="off" aria-label="Horoscope form">
+        <input type="date" id="date_of_birth" name="date_of_birth" required aria-required="true" />
+        <input type="time" id="time_of_birth" name="time_of_birth" required aria-required="true" />
+        <input type="text" id="place" name="place" placeholder="Birth Place (e.g., Nidadavolu,IN)" required />
+        <button type="submit" class="btn-primary">Get Horoscope</button>
+      </form>
+      <div id="loading" hidden>Loading...</div>
+      <div id="result" class="result-card" hidden aria-live="polite"></div>
+    </section>
+  </main>
+  <footer>
+    <p>© 2025 AstroMatch by Srinivas</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
