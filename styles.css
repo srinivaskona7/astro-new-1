@@ -46,17 +46,20 @@ main {
 .autocomplete-wrapper {
   position: relative;
   width: 100%;
+  margin-bottom: 22px;
+  z-index: 2;
 }
 
-input[type="date"],
-input[type="time"],
-input[type="text"] {
+input[type=date],
+input[type=time],
+input[type=text] {
   padding: 0.8rem 1rem;
   font-size: 1rem;
   border: 1.8px solid #ccc;
   border-radius: 8px;
   outline: none;
   transition: border-color 0.25s ease;
+  background: #fff;
 }
 
 input:focus {
@@ -66,17 +69,17 @@ input:focus {
 
 #searchSuggestions {
   position: absolute;
-  top: 100%;
   left: 0;
   right: 0;
+  top: 44px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(107, 46, 255, 0.15);
+  border: 1.6px solid #e6e0fa;
   max-height: 240px;
   overflow-y: auto;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 10px 40px rgba(107,46,255,0.15);
-  border: 1.8px solid #e6e0fa;
-  padding: 0.2rem 0;
-  z-index: 10000;
+  padding: 4px 0;
+  z-index: 10;
   display: none;
   font-weight: 600;
 }
@@ -87,7 +90,7 @@ input:focus {
   color: #5539ed;
   border-bottom: 1px solid #f2eaff;
   font-size: 1rem;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.2s ease, color 0.2s ease;
   border-radius: 8px;
   margin: 2px 0;
 }
@@ -114,6 +117,7 @@ input:focus {
   transition: filter 0.25s ease;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin-bottom: 0;
 }
 
 .btn-primary:hover {
@@ -121,44 +125,81 @@ input:focus {
 }
 
 .loading {
-  margin: 1rem 0;
+  margin: 1rem 0 0.5rem 0;
   font-weight: 600;
   text-align: center;
   color: #532eee;
 }
 
-.error {
-  margin-top: 1rem;
-  background: #fbdada;
-  color: #b52020;
-  padding: 12px 20px;
-  font-weight: 600;
-  border-radius: 12px;
-  text-align: center;
-}
-
 .result-card {
   background: #fff7d1;
   border-radius: 15px;
-  padding: 1.6rem 2rem;
+  padding: 2rem 1.7rem 1.7rem 1.7rem;
   box-shadow: 0 8px 20px rgba(255, 215, 0, 0.18);
   margin-top: 2rem;
   font-weight: 600;
   letter-spacing: 0.03em;
   color: #603900;
-  min-height: 100px;
 }
 
-.result-row {
+.horoscope-key-info {
   display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #e3dcaa;
-  font-size: 1.1rem;
-  color: #654e0f;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
-.result-row:last-child {
+.horoscope-box {
+  background: #ffeecf;
+  border-radius: 16px;
+  padding: 16px 20px;
+  min-width: 140px;
+  flex: 1 1 140px;
+  box-shadow: 0 4px 10px rgba(255, 168, 0, 0.3);
+  font-weight: 700;
+  color: #9c7000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.horoscope-box img {
+  width: 28px;
+  height: 28px;
+}
+
+.horoscope-box strong {
+  flex: 1;
+  font-weight: 700;
+}
+
+.horoscope-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.2rem;
+  background: transparent;
+}
+
+.horoscope-table td,
+.horoscope-table th {
+  padding: 0.75em 0.4em;
+  font-size: 1.08rem;
+  border-bottom: 1px solid #fdf2be;
+}
+
+.horoscope-table th {
+  text-align: left;
+  color: #6d513c;
+  font-weight: 700;
+  border-bottom: 1.5px solid #e9deb3;
+}
+
+.horoscope-table td {
+  color: #533214;
+  font-weight: 600;
+}
+
+.horoscope-table tr:last-child td {
   border-bottom: none;
 }
 

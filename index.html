@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Astrology App</title>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:600,400&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Astrology App</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:600,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main>
@@ -21,19 +21,20 @@
         <input type="time" id="time_of_birth" name="time_of_birth" required />
 
         <label for="place">Place</label>
-        <input type="text" id="place" name="place" placeholder="Enter place name" autocomplete="off" required />
-        <div id="searchSuggestions"></div>
+        <div class="autocomplete-wrapper" style="margin-bottom: 22px;">
+          <input type="text" id="place" name="place" placeholder="Enter place name" autocomplete="off" required />
+          <div id="searchSuggestions"></div>
+        </div>
 
-        <button type="submit" class="btn-primary">Get Horoscope</button>
+        <button type="submit" class="btn-primary">GET HOROSCOPE</button>
         <div id="loading" class="loading"></div>
       </form>
     </section>
 
-    <section id="result" class="result-card" aria-live="polite"></section>
+    <section id="result" class="result-card" aria-live="polite" hidden></section>
 
-    <footer>© 2025 Astrology by YourName</footer>
+    <footer>© 2025 Astrology App</footer>
   </main>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

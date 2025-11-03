@@ -139,29 +139,46 @@ form.addEventListener('submit', async e => {
 
     if (data.status === 'ok' && data.data) {
       const d = data.data;
-      const fields = [
-        ['Nakshatra', `${d.nakshatra?.name ?? 'N/A'} (Pada: ${d.nakshatra?.pada ?? 'N/A'})`],
-        ['Nakshatra Lord', `${d.nakshatra?.lord?.name ?? 'N/A'} (${d.nakshatra?.lord?.vedic_name ?? ''})`],
-        ['Chandra Rasi', d.chandra_rasi?.name ?? 'N/A'],
-        ['Soorya Rasi', d.soorya_rasi?.name ?? 'N/A'],
-        ['Zodiac Sign', d.zodiac?.name ?? 'N/A'],
-        ['Deity', d.additional_info?.deity ?? 'N/A'],
-        ['Ganam', d.additional_info?.ganam ?? 'N/A'],
-        ['Symbol', d.additional_info?.symbol ?? 'N/A'],
-        ['Animal Sign', d.additional_info?.animal_sign ?? 'N/A'],
-        ['Nadi', d.additional_info?.nadi ?? 'N/A'],
-        ['Color', d.additional_info?.color ?? 'N/A'],
-        ['Best Direction', d.additional_info?.best_direction ?? 'N/A'],
-        ['Syllables', d.additional_info?.syllables ?? 'N/A'],
-        ['Birth Stone', d.additional_info?.birth_stone ?? 'N/A'],
-        ['Gender', d.additional_info?.gender ?? 'N/A'],
-        ['Planet', d.additional_info?.planet ?? 'N/A'],
-        ['Enemy Yoni', d.additional_info?.enemy_yoni ?? 'N/A'],
-      ];
-      resultEl.innerHTML = '<h3>Horoscope Details</h3>' + 
-        fields.map(([k,v]) => 
-          `<div class="result-row"><strong>${k}:</strong> ${v}</div>`
-        ).join('');
+      resultEl.innerHTML = `
+        <h3>Horoscope Details</h3>
+        <div class="horoscope-key-info">
+          <div class="horoscope-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/3074/3074195.png" alt="Nakshatra" />
+            <div><strong>Nakshatra:</strong> ${d.nakshatra?.name ?? 'N/A'} (Pada: ${d.nakshatra?.pada ?? 'N/A'})</div>
+          </div>
+          <div class="horoscope-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/4202/4202839.png" alt="Rasi" />
+            <div><strong>Rasi:</strong> ${d.chandra_rasi?.name ?? 'N/A'}</div>
+          </div>
+          <div class="horoscope-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/4240/4240736.png" alt="Ganam" />
+            <div><strong>Ganam:</strong> ${d.additional_info?.ganam ?? 'N/A'}</div>
+          </div>
+          <div class="horoscope-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Animal Sign" />
+            <div><strong>Animal Sign:</strong> ${d.additional_info?.animal_sign ?? 'N/A'}</div>
+          </div>
+          <div class="horoscope-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/2049/2049240.png" alt="Symbol" />
+            <div><strong>Symbol:</strong> ${d.additional_info?.symbol ?? 'N/A'}</div>
+          </div>
+        </div>
+        <table class="horoscope-table">
+          <tbody>
+            <tr><th>Nakshatra Lord</th><td>${d.nakshatra?.lord?.name ?? ''} (${d.nakshatra?.lord?.vedic_name ?? ''})</td></tr>
+            <tr><th>Soorya Rasi</th><td>${d.soorya_rasi?.name ?? ''}</td></tr>
+            <tr><th>Zodiac Sign</th><td>${d.zodiac?.name ?? ''}</td></tr>
+            <tr><th>Deity</th><td>${d.additional_info?.deity ?? ''}</td></tr>
+            <tr><th>Nadi</th><td>${d.additional_info?.nadi ?? ''}</td></tr>
+            <tr><th>Color</th><td>${d.additional_info?.color ?? ''}</td></tr>
+            <tr><th>Best Direction</th><td>${d.additional_info?.best_direction ?? ''}</td></tr>
+            <tr><th>Syllables</th><td>${d.additional_info?.syllables ?? ''}</td></tr>
+            <tr><th>Birth Stone</th><td>${d.additional_info?.birth_stone ?? ''}</td></tr>
+            <tr><th>Gender</th><td>${d.additional_info?.gender ?? ''}</td></tr>
+            <tr><th>Planet</th><td>${d.additional_info?.planet ?? ''}</td></tr>
+            <tr><th>Enemy Yoni</th><td>${d.additional_info?.enemy_yoni ?? ''}</td></tr>
+          </tbody>
+        </table>`;
     } else {
       resultEl.textContent = 'Could not retrieve horoscope details.';
     }
