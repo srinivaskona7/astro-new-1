@@ -1,58 +1,61 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:600,400&display=swap');
-
-* {
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap');
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background: #f2f6fa;
+  background-color: #121212;
   margin: 0;
-  color: #222a2a;
+  color: #eee;
   line-height: 1.5;
+  font-size: 14px;
 }
 
 header {
-  background: #532eee;
-  color: white;
-  text-align: center;
-  padding: 1.5rem;
-  box-shadow: 0 4px 8px rgba(83, 46, 238, 0.3);
+  background: linear-gradient(90deg, #5a36d5, #ffa500);
+  padding: 1.4rem 2rem 1rem;
   border-radius: 0 0 20px 20px;
+  text-align: center;
+  color: #fff5a0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  user-select: none;
 }
-
-header h1 {
-  margin: 0 0 1rem 0;
-  font-weight: 700;
+.app-header-small {
+  font-size: 0.85rem;
+  margin-bottom: 0.33rem;
+  font-weight: 600;
+  color: #fde44d;
 }
 
 nav {
+  margin-top: 1rem;
   display: flex;
   justify-content: center;
-  gap: 28px;
+  gap: 2.3rem;
 }
 
 .tab-button {
-  background: none;
-  border: none;
+  font-size: 1rem;
   font-weight: 600;
-  font-size: 1.1rem;
-  color: #ccc;
-  cursor: pointer;
+  text-transform: uppercase;
   padding-bottom: 8px;
+  border: none;
+  background: none;
+  color: #dcb31faa;
   border-bottom: 3px solid transparent;
-  transition: color 0.3s, border-color 0.3s;
+  cursor: pointer;
+  transition: 0.15s ease all;
 }
 
 .tab-button.active {
-  color: #ffd700;
-  border-color: #ffd700;
+  color: #fff9ae;
+  border-color: #ffc419;
 }
 
 main {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 900px;
+  margin: 2rem auto 3rem;
+  padding: 0 1.5rem;
 }
 
 .form-section {
@@ -64,94 +67,93 @@ main {
 }
 
 form {
-  background: white;
-  padding: 1.8rem 2rem;
+  background: #222218;
+  box-shadow: 0 8px 30px 0 rgb(230 176 28 / 0.15);
+  padding: 1.8rem 2.2rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #dbb72d;
+  letter-spacing: 0.005em;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input[type='text'],
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'] {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 1rem;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(83, 46, 238, 0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  position: relative;
+  border: 2px solid #503d00cc;
+  background: #35422c;
+  color: #d8bc45;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+
+input:focus {
+  border-color: #ffc419;
+  box-shadow: 0 0 14px #ffcc33aa;
 }
 
 .autocomplete-wrapper {
   position: relative;
-  width: 100%;
-  margin-bottom: 16px;
-  z-index: 2;
+  margin-bottom: 1rem;
 }
 
-input[type=date],
-input[type=time],
-input[type=text],
-input[type=datetime-local] {
-  padding: 0.8rem 1rem;
-  font-size: 1rem;
-  border: 1.8px solid #ccc;
-  border-radius: 8px;
-  outline: none;
-  transition: border-color 0.25s ease;
-  background: #fff;
-}
-
-input:focus {
-  border-color: #532eee;
-  box-shadow: 0 0 8px #a1a0f0;
-}
-
-#searchSuggestions,
-#searchSuggestionsGirl,
-#searchSuggestionsBoy {
+.autocomplete-dropdown {
   position: absolute;
   left: 0;
   right: 0;
-  top: 44px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(107, 46, 255, 0.15);
-  border: 1.6px solid #e6e0fa;
-  max-height: 240px;
+  top: 46px;
+  max-height: 230px;
   overflow-y: auto;
-  padding: 4px 0;
+  background: #262623;
+  box-shadow: 0 4px 30px #ffd744cc;
+  border-radius: 12px;
   z-index: 10;
+  font-weight: 700;
+  color: #ffd945;
   display: none;
-  font-weight: 600;
 }
 
 .suggestion-item {
-  padding: 14px 24px;
+  padding: 12px 18px;
   cursor: pointer;
-  color: #5539ed;
-  border-bottom: 1px solid #f2eaff;
+  border-bottom: 1px solid #3b3a2a;
   font-size: 1rem;
-  transition: background 0.2s ease, color 0.2s ease;
-  border-radius: 8px;
-  margin: 2px 0;
-}
-
-.suggestion-item:last-child {
-  border-bottom: none;
+  transition: background-color 0.2s;
 }
 
 .suggestion-item:hover,
 .suggestion-item.active {
-  background-color: #f6f1fe;
-  color: #7a57ff;
+  background-color: #513f04;
+  color: #fff492;
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, #532eee 30%, #ffd700 100%);
+  width: 100%;
+  font-weight: 800;
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #5a36d5, #ffa500);
   border: none;
-  padding: 1rem 0;
-  border-radius: 10px;
   color: white;
-  font-weight: 700;
-  font-size: 1.15rem;
+  padding: 1.3rem 0;
+  border-radius: 20px;
   cursor: pointer;
   transition: filter 0.25s ease;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-bottom: 0;
+  box-shadow: 0 8px 30px 0 #db9c0b88;
+  margin-top: 0.8rem;
 }
 
 .btn-primary:hover {
@@ -159,134 +161,234 @@ input:focus {
 }
 
 .loading {
-  margin: 1rem 0 0.5rem 0;
-  font-weight: 600;
+  font-weight: 700;
+  color: #ffcc00cc;
   text-align: center;
-  color: #532eee;
+  margin-top: 1rem;
 }
 
 .result-card {
-  background: #fff7d1;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.18);
-  margin-top: 2rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: #603900;
-  overflow-wrap: break-word;
+  background: #3e3e1e;
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  box-shadow: 0 8px 34px #ffaa00aa;
+  color: #fff471;
+  font-weight: 800;
+  letter-spacing: 0.015em;
+  margin-top: 3rem;
+  font-size: 1rem;
 }
 
-.horoscope-key-info {
+/* Small top info boxes */
+.horoscope-top {
   display: flex;
+  gap: 1.3rem;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 24px;
+  margin-bottom: 2rem;
 }
 
-.horoscope-box {
-  background: #ffeecf;
-  border-radius: 16px;
-  padding: 16px 20px;
-  min-width: 140px;
-  flex: 1 1 140px;
-  box-shadow: 0 4px 10px rgba(255, 168, 0, 0.3);
+.horo-box {
+  min-width: 160px;
+  background-color: #523d00cc;
+  border-radius: 12px;
+  box-shadow: 0 3px 11px rgba(255, 201, 9, 0.4);
+  padding: 1rem 2rem;
   font-weight: 700;
-  color: #9c7000;
+  font-size: 1rem;
+  color: #ffd843;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 1rem;
+  flex: 1 1 180px;
 }
 
-.horoscope-box img {
-  width: 28px;
-  height: 28px;
+.horo-box .icon {
+  font-size: 1.4rem;
 }
 
-.horoscope-box strong {
-  flex: 1;
+.horo-box:nth-child(5) {
+  flex-basis: 100%;
+  min-width: auto;
+  font-size: 1.1rem;
   font-weight: 700;
+  color: #ffea00cc;
+  padding: 1.6rem 2.2rem;
 }
 
-.horoscope-table {
+.details-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1.2rem;
-  background: transparent;
 }
 
-.horoscope-table td,
-.horoscope-table th {
-  padding: 0.75em 0.4em;
-  font-size: 1.08rem;
-  border-bottom: 1px solid #fdf2be;
-}
-
-.horoscope-table th {
-  text-align: left;
-  color: #6d513c;
-  font-weight: 700;
-  border-bottom: 1.5px solid #e9deb3;
-}
-
-.horoscope-table td {
-  color: #533214;
+.details-table td,
+.details-table th {
+  padding: 1rem 1.5rem;
+  border-bottom: 1.6px solid #5e5300cc;
   font-weight: 600;
+  color: #e0d425;
+  font-size: 1rem;
+  text-align: left;
 }
 
-.horoscope-table tr:last-child td {
+.details-table th {
+  font-weight: 700;
+  color: #ffef4f;
+}
+
+.details-table tr:last-child td {
   border-bottom: none;
 }
 
-.kundali-sections {
+/* Kundali Matching Cards */
+.kundali-container {
   display: flex;
-  gap: 24px;
+  gap: 2.5rem;
   flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 3rem;
 }
 
-.kundali-section {
-  flex: 1 1 45%;
-  background: #fef4cc;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 0 14px -2px rgba(83, 46, 238, 0.15);
+.kundali-card {
+  background: #3f3a07cc;
+  border-radius: 22px;
+  box-shadow: 0 4px 28px #ffaa0088;
+  flex: 1 1 46%;
+  min-width: 330px;
+  padding: 2rem 2.5rem;
+  color: #fff95a;
+  font-weight: 700;
 }
 
-.kundali-section h3 {
-  margin-top: 0;
-  color: #6d513c;
+.kundali-card h4 {
+  font-weight: 900;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #fada18;
+}
+
+.nakshatra-name-pada {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  color: #f4df3e;
+  font-family: "Georgia", serif;
+}
+
+.nakshatra-name-pada .nakshatra {
+  background: #a07f01;
+  padding: 0.5rem 1.4rem;
+  border-radius: 15px;
+  box-shadow: 0 3px 8px #c4b00b;
+}
+
+.nakshatra-name-pada .pada {
+  font-style: italic;
+  background: #e8d45c;
+  color: #66530a;
+  padding: 0.4rem 1.1rem;
+  border-radius: 13px;
+  font-weight: 700;
+}
+
+.rasi-name-pada {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+  color: #cab800;
+}
+
+.kundali-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-weight: 600;
+}
+
+.kundali-details-table td,
+.kundali-details-table th {
+  padding: 0.8rem 1.5rem;
+  border-bottom: 1.6px solid #d4bb11cc;
+  color: #fcf9b6;
+  font-size: 1rem;
+}
+
+.kundali-details-table tr:last-child td {
+  border-bottom: none;
+}
+
+.match-summary {
+  background: #ffea39;
+  border-radius: 20px;
+  padding: 1.5rem 2.2rem;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.018em;
+  margin-bottom: 3rem;
+  color: #4a4400;
+  box-shadow: 0 0 30px #d0c12aad;
+  line-height: 1.3;
+}
+
+.points-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 20px;
+  overflow: hidden;
+  font-weight: 700;
+  color: #574c00;
+  background-color: #fff7a2;
+  box-shadow: 0 5px 22px #d9ca4699;
+}
+
+.points-table th,
+.points-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1.4px solid #d7c64e;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.points-table th {
+  color: #a88a09;
+  background-color: #fff6b9;
+  font-weight: 900;
+}
+
+.points-table tr:hover {
+  background-color: #fff8cd;
+}
+
+.points-table .total-row td {
+  font-size: 1.2rem;
+  font-weight: 900;
+  background-color: #fff4a8;
+  border-bottom: none;
 }
 
 footer {
   text-align: center;
-  background: #532eee;
-  padding: 0.9rem;
-  color: #ffd700;
-  font-weight: 600;
+  background: #5e43bf;
+  color: #ffed29;
+  padding: 1.2rem 0;
+  margin-top: 5rem;
+  font-weight: 700;
+  border-radius: 0 0 20px 20px;
   letter-spacing: 0.04em;
-  margin-top: 4rem;
 }
 
-@media (max-width: 860px) {
-  .kundali-sections {
+@media (max-width: 850px) {
+  main {
+    max-width: 98vw;
+  }
+  .kundali-container {
     flex-direction: column;
   }
-  .kundali-section {
-    flex: 1 1 100%;
+  .kundali-card {
+    flex-basis: 100%;
+    min-width: auto;
   }
-}
-
-@media (max-width: 480px) {
-  main {
-    margin: 1rem;
-  }
-  form {
-    padding: 1.2rem 1.2rem;
-  }
-  .btn-primary {
-    font-size: 1rem;
-    padding: 0.9rem 0;
+  .form-section form {
+    padding: 1rem;
   }
 }

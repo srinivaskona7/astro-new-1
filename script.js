@@ -1,373 +1,279 @@
+// --- Global Element Initialization ---
 const tabHoroscope = document.getElementById('tabHoroscope');
 const tabMatching = document.getElementById('tabMatching');
-const horoscopeSection = document.getElementById('horoscopeSection');
-const matchingSection = document.getElementById('matchingSection');
+const sectionHoroscope = document.getElementById('horoscopeSection');
+const sectionMatching = document.getElementById('matchingSection');
 
-const resultEl = document.getElementById('result');
-const matchingResult = document.getElementById('matchingResult');
+const resultContainer = document.getElementById('result');
+const matchContainer = document.getElementById('matchingResult');
 
 const placeInput = document.getElementById('place');
-const suggestionsContainer = document.getElementById('searchSuggestions');
-const placeInputGirl = document.getElementById('girl_place');
-const suggestionsContainerGirl = document.getElementById('searchSuggestionsGirl');
-const placeInputBoy = document.getElementById('boy_place');
-const suggestionsContainerBoy = document.getElementById('searchSuggestionsBoy');
+const suggestionsDiv = document.getElementById('searchSuggestions');
+const girlPlaceInput = document.getElementById('girl_place');
+const girlSuggestionsDiv = document.getElementById('searchSuggestionsGirl');
+const boyPlaceInput = document.getElementById('boy_place');
+const boySuggestionsDiv = document.getElementById('searchSuggestionsBoy');
 
-tabHoroscope.addEventListener('click', () => {
-  tabHoroscope.classList.add('active');
-  tabMatching.classList.remove('active');
-  horoscopeSection.classList.add('active');
-  matchingSection.classList.remove('active');
-  resultEl.hidden = true;
-  matchingResult.hidden = true;
-});
-
-tabMatching.addEventListener('click', () => {
-  tabHoroscope.classList.remove('active');
-  tabMatching.classList.add('active');
-  horoscopeSection.classList.remove('active');
-  matchingSection.classList.add('active');
-  resultEl.hidden = true;
-  matchingResult.hidden = true;
-});
-
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
+// --- Tab Switching ---
+function switchTab(tabType) {
+  if (tabType === 'horoscope') {
+    sectionHoroscope.classList.add('active');
+    sectionMatching.classList.remove('active');
+    tabHoroscope.classList.add('active');
+    tabMatching.classList.remove('active');
+  } else {
+    sectionHoroscope.classList.remove('active');
+    sectionMatching.classList.add('active');
+    tabHoroscope.classList.remove('active');
+    tabMatching.classList.add('active');
+  }
 }
+document.getElementById('tabHoroscope').onclick = () => switchTab('horoscope');
+document.getElementById('tabMatching').onclick = () => switchTab('matching');
 
-async function fetchLocations(query) {
-  if (!query) return [];
+// --- Helper functions for fetch & autocomplete ---
+async function fetchLocation(query) {
+  if (!query || query.length < 2) return [];
   try {
     const response = await fetch(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
-        query
-      )}&limit=5&appid=81b56c410d08b1d5653d3af091632562`
+      `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=81b56c410d08b1d5653d3af091632562`
     );
     if (!response.ok) return [];
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch {
     return [];
   }
 }
 
-function setupAutocomplete(input, container) {
-  let localIndex = -1;
-  let locations = [];
-
-  input.addEventListener(
-    'input',
-    debounce(async () => {
-      localIndex = -1;
-      const val = input.value.trim();
-      if (val.length < 2) {
-        container.style.display = 'none';
-        container.innerHTML = '';
-        return;
-      }
-      locations = await fetchLocations(val);
-      if (!locations.length) {
-        container.style.display = 'none';
-        container.innerHTML = '';
-        return;
-      }
-      container.innerHTML = locations
-        .map(
-          (loc, i) =>
-            `<div class="suggestion-item ${
-              i === localIndex ? 'active' : ''
-            }" data-lat="${loc.lat}" data-lon="${loc.lon}">${loc.name}${
-              loc.state ? ', ' + loc.state : ''
-            }, ${loc.country}</div>`
-        )
-        .join('');
-      container.style.display = 'block';
-    }, 300)
-  );
-
-  container.addEventListener('click', (e) => {
-    const div = e.target.closest('.suggestion-item');
-    if (!div) return;
-    input.value = div.textContent;
-    input.dataset.coordinates = `${div.getAttribute('data-lat')},${div.getAttribute(
-      'data-lon'
-    )}`;
-    container.style.display = 'none';
-    container.innerHTML = '';
+function setupAutocomplete(inputEl, suggestionsDiv, callback) {
+  let selectedIndex = -1;
+  inputEl.addEventListener('input', async () => {
+    selectedIndex = -1;
+    const query = inputEl.value.trim();
+    const options = await fetchLocation(query);
+    if (!options.length) {
+      suggestionsDiv.innerHTML = '';
+      suggestionsDiv.style.display = 'none';
+      inputEl.dataset.coords = '';
+      return;
+    }
+    suggestionsDiv.innerHTML = options
+      .map((loc, idx) => `
+        <div class="suggestion-item ${idx === selectedIndex ? 'active' : ''}" 
+             data-lat="${loc.lat}" data-lon="${loc.lon}">
+          ${loc.name}${loc.state ? ', ' + loc.state : ''}, ${loc.country}
+        </div>
+      `)
+      .join('');
+    suggestionsDiv.style.display = 'block';
   });
-
-  input.addEventListener('keydown', (e) => {
-    const items = container.querySelectorAll('.suggestion-item');
-    if (!items.length || container.style.display === 'none') return;
+  suggestionsDiv.onclick = (e) => {
+    const item = e.target.closest('.suggestion-item');
+    if (!item) return;
+    inputEl.value = item.innerText;
+    inputEl.dataset.coords = `${item.dataset.lat},${item.dataset.lon}`;
+    suggestionsDiv.style.display = 'none';
+  };
+  inputEl.addEventListener('keydown', (e) => {
+    const items = suggestionsDiv.querySelectorAll('.suggestion-item');
+    if (!items.length || suggestionsDiv.style.display === 'none') return;
     if (e.key === 'ArrowDown') {
-      localIndex = (localIndex + 1) % items.length;
-      updateFocus(items, localIndex);
-      e.preventDefault();
+      selectedIndex = (selectedIndex + 1) % items.length;
     } else if (e.key === 'ArrowUp') {
-      localIndex = (localIndex - 1 + items.length) % items.length;
-      updateFocus(items, localIndex);
-      e.preventDefault();
-    } else if (e.key === 'Enter' && localIndex >= 0) {
-      items[localIndex].click();
-      e.preventDefault();
+      selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+    } else if (e.key === 'Enter') {
+      if (selectedIndex >= 0) {
+        items[selectedIndex].click();
+        e.preventDefault();
+      }
     }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!container.contains(e.target) && e.target !== input) {
-      container.style.display = 'none';
-      container.innerHTML = '';
-    }
+    items.forEach((el, idx) => el.classList.toggle('active', idx === selectedIndex));
   });
 }
 
-function updateFocus(items, index) {
-  items.forEach((item, i) => item.classList.toggle('active', i === index));
-  if (items[index]) {
-    items[index].scrollIntoView({ block: 'nearest' });
-  }
-}
+// --- Initialize autocompletion ---
+setupAutocomplete(placeInput, suggestionsDiv);
+setupAutocomplete(girlPlaceInput, girlSuggestionsDiv);
+setupAutocomplete(boyPlaceInput, boySuggestionsDiv);
 
-// Initialize autocomplete on all inputs
-setupAutocomplete(placeInput, suggestionsContainer);
-setupAutocomplete(placeInputGirl, suggestionsContainerGirl);
-setupAutocomplete(placeInputBoy, suggestionsContainerBoy);
-
-function toISO8601(s) {
-  if (!s) return '';
-  if (s.endsWith('Z') || s.includes('+')) return s;
-  return s + ':00+05:30'; // append seconds & IST as default timezone
-}
-
+// --- Horoscope Fetch & Render ---
 document.getElementById('horoscopeForm').onsubmit = async (e) => {
   e.preventDefault();
-  resultEl.hidden = true;
-  const loading = document.getElementById('loading');
-  loading.textContent = 'Loading horoscope...';
-  resultEl.innerHTML = '';
-
+  resultContainer.innerHTML = '';
+  resultContainer.hidden = true;
+  document.getElementById('loading').innerText = 'Loading...';
   const dob = document.getElementById('date_of_birth').value;
   const tob = document.getElementById('time_of_birth').value;
   const place = placeInput.value.trim();
-  let coordinates = placeInput.dataset.coordinates;
+  let coords = placeInput.dataset.coords;
 
-  if (!dob || !tob || !place) {
-    loading.textContent = '';
-    alert('Please fill all fields');
-    return;
-  }
-
-  if (!coordinates) {
-    const locs = await fetchLocations(place);
-    if (!locs.length) {
-      loading.textContent = '';
-      alert('Invalid place');
+  if (!coords) {
+    const locs = await fetchLocation(place);
+    if (locs.length) {
+      coords = `${locs[0].lat},${locs[0].lon}`;
+    } else {
+      alert('Invalid place.');
+      document.getElementById('loading').innerText = '';
       return;
     }
-    coordinates = `${locs[0].lat},${locs[0].lon}`;
   }
-
   try {
-    const res = await fetch('/api/horoscope', {
+    const response = await fetch('/api/horoscope', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date_of_birth: dob, time_of_birth: tob, coordinates }),
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({date_of_birth: dob, time_of_birth: tob, coordinates: coords}),
     });
-    if (!res.ok) throw new Error('Horoscope fetch failed');
-    const data = await res.json();
-
-    loading.textContent = '';
-    if (data.status === 'ok' && data.data) {
-      const d = data.data;
-      resultEl.innerHTML = `
-      <h3>Horoscope Details</h3>
-      <div class="horoscope-key-info">
-        <div class="horoscope-box"><span>🕉️</span><div><strong>Nakshatra:</strong> ${d.nakshatra?.name ?? ''} (Pada: ${d.nakshatra?.pada ?? ''})</div></div>
-        <div class="horoscope-box"><span>🧑🏻</span><div><strong>Rasi:</strong> ${d.chandra_rasi?.name ?? ''}</div></div>
-        <div class="horoscope-box"><span>👥</span><div><strong>Ganam:</strong> ${d.additional_info?.ganam ?? ''}</div></div>
-        <div class="horoscope-box"><span>🐯</span><div><strong>Animal Sign:</strong> ${d.additional_info?.animal_sign ?? ''}</div></div>
-        <div class="horoscope-box"><span>🎈</span><div><strong>Symbol:</strong> ${d.additional_info?.symbol ?? ''}</div></div>
-      </div>
-      <table class="horoscope-table">
-        <tbody>
-          <tr><th>Nakshatra Lord</th><td>${d.nakshatra?.lord?.name ?? ''} (${d.nakshatra?.lord?.vedic_name ?? ''})</td></tr>
-          <tr><th>Soorya Rasi</th><td>${d.soorya_rasi?.name ?? ''}</td></tr>
-          <tr><th>Zodiac Sign</th><td>${d.zodiac?.name ?? ''}</td></tr>
-          <tr><th>Deity</th><td>${d.additional_info?.deity ?? ''}</td></tr>
-          <tr><th>Nadi</th><td>${d.additional_info?.nadi ?? ''}</td></tr>
-          <tr><th>Color</th><td>${d.additional_info?.color ?? ''}</td></tr>
-          <tr><th>Best Direction</th><td>${d.additional_info?.best_direction ?? ''}</td></tr>
-          <tr><th>Syllables</th><td>${d.additional_info?.syllables ?? ''}</td></tr>
-          <tr><th>Birth Stone</th><td>${d.additional_info?.birth_stone ?? ''}</td></tr>
-          <tr><th>Gender</th><td>${d.additional_info?.gender ?? ''}</td></tr>
-          <tr><th>Planet</th><td>${d.additional_info?.planet ?? ''}</td></tr>
-          <tr><th>Enemy Yoni</th><td>${d.additional_info?.enemy_yoni ?? ''}</td></tr>
-        </tbody>
-      </table>`;
-      resultEl.hidden = false;
+    const data = await response.json();
+    document.getElementById('loading').innerText = '';
+    if (response.ok && data.status === 'ok' && data.data) {
+      renderHoroscope(data.data);
+      resultContainer.hidden = false;
     } else {
-      resultEl.textContent = 'Error: Could not generate horoscope.';
-      resultEl.hidden = false;
+      resultContainer.innerText = 'Failed to generate horoscope.';
+      resultContainer.hidden = false;
     }
-  } catch (error) {
-    loading.textContent = '';
-    resultEl.hidden = false;
-    resultEl.textContent = `Error: ${error.message}`;
+  } catch (err) {
+    document.getElementById('loading').innerText = '';
+    resultContainer.innerText = `Error: ${err.message}`;
+    resultContainer.hidden = false;
   }
 };
 
+function renderHoroscope(d) {
+  resultContainer.innerHTML = `
+    <div class="horoscope-box" style="margin-bottom:12px;">
+      <div><strong>Nakshatra</strong> ${d.nakshatra?.name ?? ''} (Pada: ${d.nakshatra?.pada ?? ''})</div>
+    </div>
+    <div class="horoscope-box" style="margin-bottom:12px;">
+      <div><strong>Rasi</strong> ${d.chandra_rasi?.name ?? ''}</div>
+    </div>
+    <div class="horoscope-box" style="margin-bottom:12px;">
+      <div><strong>Ganam</strong> ${d.additional_info?.ganam ?? ''}</div>
+    </div>
+    <div class="horoscope-box" style="margin-bottom:12px;">
+      <div><strong>Animal Sign</strong> ${d.additional_info?.animal_sign ?? ''}</div>
+    </div>
+    <div class="horoscope-box" style="margin-bottom:12px;">
+      <div><strong>Symbol</strong> ${d.additional_info?.symbol ?? ''}</div>
+    </div>
+    <table class="details-table">
+      <tbody>
+        <tr><th>Nakshatra Lord</th><td>${d.nakshatra?.lord?.name ?? ''} (${d.nakshatra?.lord?.vedic_name ?? ''})</td></tr>
+        <tr><th>Soorya Rasi</th><td>${d.soorya_rasi?.name ?? ''}</td></tr>
+        <tr><th>Zodiac Sign</th><td>${d.zodiac?.name ?? ''}</td></tr>
+        <tr><th>Deity</th><td>${d.additional_info?.deity ?? ''}</td></tr>
+        <tr><th>Nadi</th><td>${d.additional_info?.nadi ?? ''}</td></tr>
+        <tr><th>Color</th><td>${d.additional_info?.color ?? ''}</td></tr>
+        <tr><th>Best Direction</th><td>${d.additional_info?.best_direction ?? ''}</td></tr>
+        <tr><th>Syllables</th><td>${d.additional_info?.syllables ?? ''}</td></tr>
+        <tr><th>Birth Stone</th><td>${d.additional_info?.birth_stone ?? ''}</td></tr>
+        <tr><th>Gender</th><td>${d.additional_info?.gender ?? ''}</td></tr>
+        <tr><th>Planet</th><td>${d.additional_info?.planet ?? ''}</td></tr>
+        <tr><th>Enemy Yoni</th><td>${d.additional_info?.enemy_yoni ?? ''}</td></tr>
+      </tbody>
+    </table>
+  `;
+}
+
+// --- Kundali Matching Submission & Render ---
 document.getElementById('matchingForm').onsubmit = async (e) => {
   e.preventDefault();
-  matchingResult.hidden = true;
-  const loadingMatching = document.getElementById('loadingMatching');
-  loadingMatching.textContent = 'Loading matching results...';
-  matchingResult.innerHTML = '';
+  matchContainer.hidden = true;
+  document.getElementById('loadingMatching').innerText = 'Loading...';
 
-  const girlDOB = document.getElementById('girl_dob').value;
-  const boyDOB = document.getElementById('boy_dob').value;
-  const girlPlace = placeInputGirl.value.trim();
-  const boyPlace = placeInputBoy.value.trim();
-  let girlCoords = placeInputGirl.dataset.coordinates;
-  let boyCoords = placeInputBoy.dataset.coordinates;
+  const girlDob = document.getElementById('girl_dob').value;
+  const boyDob = document.getElementById('boy_dob').value;
+  const girlPlace = girlPlaceInput.value.trim();
+  const boyPlace = boyPlaceInput.value.trim();
+  let girlCoords = girlPlaceInput.dataset.coords;
+  let boyCoords = boyPlaceInput.dataset.coords;
 
-  function toISO8601(s) {
-    if (!s) return '';
-    if (s.endsWith('Z') || s.includes('+')) return s;
-    return s + ':00+05:30';
-  }
+  // Convert datetimes into ISO
+  function toISO(s) { return s ? s + ':00+05:30' : ''; }
+  const girlISO = toISO(girlDob);
+  const boyISO = toISO(boyDob);
 
-  const girl_dob_ISO = toISO8601(girlDOB);
-  const boy_dob_ISO = toISO8601(boyDOB);
-
-  if (!girlDOB || !boyDOB || !girlPlace || !boyPlace) {
-    loadingMatching.textContent = '';
-    alert('Please fill all fields for matching.');
+  if (!girlDob || !boyDob || !girlPlace || !boyPlace) {
+    alert('Fill all required kundali details.');
+    document.getElementById('loadingMatching').innerText = '';
     return;
   }
 
+  // Geocode if missing
   if (!girlCoords) {
-    const resp = await fetch(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
-        girlPlace
-      )}&limit=1&appid=81b56c410d08b1d5653d3af091632562`
-    );
-    const locs = resp.ok ? await resp.json() : [];
-    if (!locs.length) {
-      loadingMatching.textContent = '';
-      alert("Couldn't resolve girl's place");
-      return;
-    }
+    const locs = await fetchLocation(girlPlace);
+    if (!locs.length) { alert("Invalid girl's place"); return; }
     girlCoords = `${locs[0].lat},${locs[0].lon}`;
   }
   if (!boyCoords) {
-    const resp = await fetch(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
-        boyPlace
-      )}&limit=1&appid=81b56c410d08b1d5653d3af091632562`
-    );
-    const locs = resp.ok ? await resp.json() : [];
-    if (!locs.length) {
-      loadingMatching.textContent = '';
-      alert("Couldn't resolve boy's place");
-      return;
-    }
+    const locs = await fetchLocation(boyPlace);
+    if (!locs.length) { alert("Invalid boy's place"); return; }
     boyCoords = `${locs[0].lat},${locs[0].lon}`;
   }
 
   try {
+    // Call backend API with correct params
     const res = await fetch('/api/kundali-matching', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ayanamsa: 1,
-        girl_coordinates: girlCoords,
-        girl_dob: girl_dob_ISO,
-        boy_coordinates: boyCoords,
-        boy_dob: boy_dob_ISO,
-        la: 'en'
-      }),
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ ayanamsa: 1, girl_coordinates: girlCoords, girl_dob: girlISO, boy_coordinates: boyCoords, boy_dob: boyISO, la: 'en' })
     });
-    if (!res.ok) throw new Error('Matching API call failed');
     const data = await res.json();
+    document.getElementById('loadingMatching').innerText = '';
 
-    loadingMatching.textContent = '';
-    if (data.status === 'ok' && data.data) {
-      const girl = data.data.girl_info;
-      const boy = data.data.boy_info;
-      const gm = data.data.guna_milan;
-      matchingResult.innerHTML = `
-        <h3>Kundali Matching Result</h3>
-        <div class="kundali-sections">
-          <div class="kundali-section">
-            <h3>Girl's Horoscope</h3>
-            <p><strong>Nakshatra:</strong> ${girl.nakshatra?.name}</p>
-            <p><strong>Rasi:</strong> ${girl.rasi?.name}</p>
-            <p><strong>Varna:</strong> ${girl.koot?.varna}</p>
-            <p><strong>Vasya:</strong> ${girl.koot?.vasya}</p>
-            <p><strong>Tara:</strong> ${girl.koot?.tara}</p>
-            <p><strong>Yoni:</strong> ${girl.koot?.yoni}</p>
-            <p><strong>Graha Maitri:</strong> ${girl.koot?.graha_maitri}</p>
-            <p><strong>Gana:</strong> ${girl.koot?.gana}</p>
-            <p><strong>Bhakoot:</strong> ${girl.koot?.bhakoot}</p>
-            <p><strong>Nadi:</strong> ${girl.koot?.nadi}</p>
-            <p><strong>Mangal Dosha:</strong> ${
-              data.data.girl_mangal_dosha_details?.description || 'N/A'
-            }</p>
+    if (res.ok && data.status === 'ok' && data.data) {
+      // Render full matching info
+      matchContainer.innerHTML = `
+      <div class="kundali-match-details">
+        <div class="match-person">
+          <h4>Girl's Horoscope</h4>
+          <div class="nakshatra-block">
+            <div class="nakshatra">${data.data.girl_info?.nakshatra?.name ?? ''}</div>
+            <div class="pada">Pada ${data.data.girl_info?.nakshatra?.pada ?? ''}</div>
           </div>
-          <div class="kundali-section">
-            <h3>Boy's Horoscope</h3>
-            <p><strong>Nakshatra:</strong> ${boy.nakshatra?.name}</p>
-            <p><strong>Rasi:</strong> ${boy.rasi?.name}</p>
-            <p><strong>Varna:</strong> ${boy.koot?.varna}</p>
-            <p><strong>Vasya:</strong> ${boy.koot?.vasya}</p>
-            <p><strong>Tara:</strong> ${boy.koot?.tara}</p>
-            <p><strong>Yoni:</strong> ${boy.koot?.yoni}</p>
-            <p><strong>Graha Maitri:</strong> ${boy.koot?.graha_maitri}</p>
-            <p><strong>Gana:</strong> ${boy.koot?.gana}</p>
-            <p><strong>Bhakoot:</strong> ${boy.koot?.bhakoot}</p>
-            <p><strong>Nadi:</strong> ${boy.koot?.nadi}</p>
-            <p><strong>Mangal Dosha:</strong> ${
-              data.data.boy_mangal_dosha_details?.description || 'N/A'
-            }</p>
-          </div>
+          <ul class="kundali-details">
+            <li><strong>Rasi:</strong> ${data.data.girl_info?.rasi?.name ?? ''}</li>
+            <li><strong>Varna:</strong> ${data.data.girl_info?.koot?.varna ?? ''}</li>
+            <!-- additional info here -->
+          </ul>
         </div>
-        <div><strong>Match Summary:</strong> ${data.data.message?.description || ''}</div>
-        <table class="horoscope-table" style="margin-top: 18px;">
-          <thead>
-            <tr>
-              <th>Koot</th>
-              <th>Girl</th>
-              <th>Boy</th>
-              <th>Points</th>
-              <th>Maximum</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${gm.guna
-              .map(
-                (g) =>
-                  `<tr><th>${g.name}</th><td>${g.girl_koot}</td><td>${g.boy_koot}</td><td>${g.obtained_points}</td><td>${g.maximum_points}</td></tr>`
-              )
-              .join('')}
-            <tr>
-              <th colspan="3" style="text-align:right;">Total Points</th>
-              <td colspan="2">${gm.total_points} / ${gm.maximum_points}</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-      matchingResult.hidden = false;
-    } else {
-      matchingResult.textContent = 'Error fetching matching results.';
-      matchingResult.hidden = false;
+        <div class="match-person">
+          <h4>Boy's Horoscope</h4>
+          <div class="nakshatra-block">
+            <div class="nakshatra">${data.data.boy_info?.nakshatra?.name ?? ''}</div>
+            <div class="pada">Pada ${data.data.boy_info?.nakshatra?.pada ?? ''}</div>
+          </div>
+          <ul class="kundali-details">
+            <li><strong>Rasi:</strong> ${data.data.boy_info?.rasi?.name ?? ''}</li>
+            <li><strong>Varna:</strong> ${data.data.boy_info?.koot?.varna ?? ''}</li>
+            <!-- additional info here -->
+          </ul>
+        </div>
+      </div>
+      <div class="match-summary">
+        <h4>Match Compatibility</h4>
+        <p>${data.data.message?.description ?? ''}</p>
+      </div>
+      <table class="points-table">
+        <thead><tr><th>Koot</th><th>Girl</th><th>Boy</th><th>Points</th></tr></thead>
+        <tbody>
+          ${data.data.guna_milan.guna.map(g => `
+          <tr>
+            <td>${g.name}</td>
+            <td>${g.girl_koot}</td>
+            <td>${g.boy_koot}</td>
+            <td>${g.obtained_points}/${g.maximum_points}</td>
+          </tr>`).join('')}
+          <tr class="total-row">
+            <td colspan="3">Total Points</td>
+            <td>${data.data.guna_milan.total_points} / ${data.data.guna_milan.maximum_points}</td>
+          </tr>
+        </tbody>
+      </table>`;
+      matchContainer.hidden = false;
     }
   } catch (err) {
-    loadingMatching.textContent = '';
-    matchingResult.textContent = `Error: ${err.message}`;
-    matchingResult.hidden = false;
+    document.getElementById('loadingMatching').innerText = '';
+    alert('Error fetching match data: ' + err.message);
   }
 };
