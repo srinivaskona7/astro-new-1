@@ -4,16 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Srinivas Kona Astrology App</title>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 <main>
 <header>
-<h2 class="app-header-small">Srinivas Kona Astrology App</h2>
+<h2 class="app-small-header">Srinivas Kona Astrology App</h2>
 <nav>
 <button id="tabHoroscope" class="tab-button active" type="button">Horoscope</button>
-<button id="tabMatching" class="tab-button" type="button">Kundali Match</button>
+<button id="tabMatching" class="tab-button" type="button">Kundali Matching</button>
 </nav>
 </header>
 
@@ -25,10 +25,10 @@
 <input type="time" id="time_of_birth" required />
 <label for="place">Place</label>
 <div class="autocomplete-wrapper">
-<input type="text" id="place" placeholder="Enter location" autocomplete="off" />
+<input type="text" id="place" placeholder="Enter place" autocomplete="off" />
 <div id="searchSuggestions" class="autocomplete-dropdown"></div>
 </div>
-<button type="submit" class="btn-primary">Get Horoscope</button>
+<button type="submit" class="btn-primary">GET HOROSCOPE</button>
 <div id="loading" class="loading"></div>
 </form>
 <section id="result" aria-live="polite" class="result-card" hidden></section>
@@ -36,23 +36,23 @@
 
 <section id="matchingSection" class="form-section">
 <form id="matchingForm" autocomplete="off">
-<h2>Girl's Details</h2>
-<label for="girl_dob">Date &amp; Time of Birth</label>
-<input type="datetime-local" id="girl_dob" />
-<label for="girl_place">Place</label>
-<div class="autocomplete-wrapper">
-<input type="text" id="girl_place" placeholder="Enter location" autocomplete="off" />
-<div id="searchSuggestionsGirl" class="autocomplete-dropdown"></div>
-</div>
 <h2>Boy's Details</h2>
-<label for="boy_dob">Date &amp; Time of Birth</label>
+<label for="boy_dob">DOB & Time</label>
 <input type="datetime-local" id="boy_dob" />
 <label for="boy_place">Place</label>
 <div class="autocomplete-wrapper">
-<input type="text" id="boy_place" placeholder="Enter location" autocomplete="off" />
+<input type="text" id="boy_place" placeholder="Enter place" autocomplete="off" />
 <div id="searchSuggestionsBoy" class="autocomplete-dropdown"></div>
 </div>
-<button type="submit" class="btn-primary">Get Match</button>
+<h2>Girl's Details</h2>
+<label for="girl_dob">DOB & Time</label>
+<input type="datetime-local" id="girl_dob" />
+<label for="girl_place">Place</label>
+<div class="autocomplete-wrapper">
+<input type="text" id="girl_place" placeholder="Enter place" autocomplete="off" />
+<div id="searchSuggestionsGirl" class="autocomplete-dropdown"></div>
+</div>
+<button type="submit" class="btn-primary">GET MATCH</button>
 <div id="loadingMatching" class="loading"></div>
 </form>
 <section id="matchingResult" aria-live="polite" class="result-card" hidden></section>
