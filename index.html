@@ -11,28 +11,50 @@
   <main>
     <header>
       <h1>Get Horoscope by Birth Details</h1>
+      <nav>
+        <button type="button" id="tabHoroscope" class="tab-button active">Horoscope</button>
+        <button type="button" id="tabMatching" class="tab-button">Kundali Matching</button>
+      </nav>
     </header>
-    <section class="form-section">
-      <form id="horoscopeForm" autocomplete="off" aria-label="Horoscope form">
+    <section id="horoscopeSection" class="form-section active">
+      <form id="horoscopeForm" autocomplete="off">
         <label for="date_of_birth">Date of Birth</label>
-        <input type="date" id="date_of_birth" name="date_of_birth" required />
-
+        <input type="date" id="date_of_birth" required />
         <label for="time_of_birth">Time of Birth</label>
-        <input type="time" id="time_of_birth" name="time_of_birth" required />
-
+        <input type="time" id="time_of_birth" required />
         <label for="place">Place</label>
-        <div class="autocomplete-wrapper" style="margin-bottom: 22px;">
-          <input type="text" id="place" name="place" placeholder="Enter place name" autocomplete="off" required />
+        <div class="autocomplete-wrapper" style="margin-bottom: 20px;">
+          <input type="text" id="place" placeholder="Enter place name" autocomplete="off" required />
           <div id="searchSuggestions"></div>
         </div>
-
         <button type="submit" class="btn-primary">GET HOROSCOPE</button>
         <div id="loading" class="loading"></div>
       </form>
+      <section id="result" class="result-card" aria-live="polite" hidden></section>
     </section>
-
-    <section id="result" class="result-card" aria-live="polite" hidden></section>
-
+    <section id="matchingSection" class="form-section">
+      <form id="matchingForm" autocomplete="off">
+        <h2>Girl's Details</h2>
+        <label for="girl_dob">Date & Time of Birth</label>
+        <input type="datetime-local" id="girl_dob" required />
+        <label for="girl_place">Place</label>
+        <div class="autocomplete-wrapper" style="margin-bottom: 16px;">
+          <input type="text" id="girl_place" placeholder="Enter girl's place" autocomplete="off" required />
+          <div id="searchSuggestionsGirl"></div>
+        </div>
+        <h2>Boy's Details</h2>
+        <label for="boy_dob">Date & Time of Birth</label>
+        <input type="datetime-local" id="boy_dob" required />
+        <label for="boy_place">Place</label>
+        <div class="autocomplete-wrapper" style="margin-bottom: 16px;">
+          <input type="text" id="boy_place" placeholder="Enter boy's place" autocomplete="off" required />
+          <div id="searchSuggestionsBoy"></div>
+        </div>
+        <button type="submit" class="btn-primary">GET MATCHING</button>
+        <div id="loadingMatching" class="loading"></div>
+      </form>
+      <section id="matchingResult" class="result-card" aria-live="polite" hidden></section>
+    </section>
     <footer>© 2025 Astrology App</footer>
   </main>
   <script src="script.js"></script>

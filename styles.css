@@ -22,17 +22,48 @@ header {
 }
 
 header h1 {
-  margin: 0;
+  margin: 0 0 1rem 0;
   font-weight: 700;
 }
 
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #ccc;
+  cursor: pointer;
+  padding-bottom: 8px;
+  border-bottom: 3px solid transparent;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.tab-button.active {
+  color: #ffd700;
+  border-color: #ffd700;
+}
+
 main {
-  max-width: 600px;
+  max-width: 800px;
   margin: 2rem auto;
   padding: 0 1rem;
 }
 
-.form-section form {
+.form-section {
+  display: none;
+}
+
+.form-section.active {
+  display: block;
+}
+
+form {
   background: white;
   padding: 1.8rem 2rem;
   border-radius: 12px;
@@ -46,13 +77,14 @@ main {
 .autocomplete-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   z-index: 2;
 }
 
 input[type=date],
 input[type=time],
-input[type=text] {
+input[type=text],
+input[type=datetime-local] {
   padding: 0.8rem 1rem;
   font-size: 1rem;
   border: 1.8px solid #ccc;
@@ -67,7 +99,9 @@ input:focus {
   box-shadow: 0 0 8px #a1a0f0;
 }
 
-#searchSuggestions {
+#searchSuggestions,
+#searchSuggestionsGirl,
+#searchSuggestionsBoy {
   position: absolute;
   left: 0;
   right: 0;
@@ -134,12 +168,13 @@ input:focus {
 .result-card {
   background: #fff7d1;
   border-radius: 15px;
-  padding: 2rem 1.7rem 1.7rem 1.7rem;
+  padding: 2rem;
   box-shadow: 0 8px 20px rgba(255, 215, 0, 0.18);
   margin-top: 2rem;
   font-weight: 600;
   letter-spacing: 0.03em;
   color: #603900;
+  overflow-wrap: break-word;
 }
 
 .horoscope-key-info {
@@ -203,6 +238,27 @@ input:focus {
   border-bottom: none;
 }
 
+.kundali-sections {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.kundali-section {
+  flex: 1 1 45%;
+  background: #fef4cc;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 14px -2px rgba(83, 46, 238, 0.15);
+}
+
+.kundali-section h3 {
+  margin-top: 0;
+  color: #6d513c;
+}
+
 footer {
   text-align: center;
   background: #532eee;
@@ -211,6 +267,15 @@ footer {
   font-weight: 600;
   letter-spacing: 0.04em;
   margin-top: 4rem;
+}
+
+@media (max-width: 860px) {
+  .kundali-sections {
+    flex-direction: column;
+  }
+  .kundali-section {
+    flex: 1 1 100%;
+  }
 }
 
 @media (max-width: 480px) {
